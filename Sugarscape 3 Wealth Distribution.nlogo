@@ -1,6 +1,7 @@
 globals [
   gini-index-reserve
   lorenz-points
+  log-msg
 ]
 
 turtles-own [
@@ -30,6 +31,7 @@ to setup
     stop
   ]
   clear-all
+  set log-msg "{{\n"
   setup-patches
   create-turtles initial-population [ turtle-setup ]
   update-lorenz-and-gini
@@ -77,21 +79,16 @@ end
 to go
   if ticks > 200 [   ;; 200步停止
     ;; 根据sugar倒排
-    output-print "sugar vision init-sugar metabolism age init-max-psugar max-psugar"
+    ;;output-print "sugar vision init-sugar metabolism age init-max-psugar max-psugar"
+    set log-msg word log-msg "# sugar vision init-sugar metabolism age/max-age init-max-psugar max-psugar [x y s]\n"
     foreach sort-on [(- sugar)] turtles
     [
       the-turtle -> ask the-turtle [
-        type (word [sugar] of the-turtle " "
-          [vision] of the-turtle " "
-          [init-sugar] of the-turtle  " "
-          [metabolism] of the-turtle  " "
-          [age] of the-turtle  " "
-          [init-max-psugar] of the-turtle "→"
-          [max-psugar] of the-turtle  " ")
-        foreach track [n -> type (word n " ")]
-        print ""
+        print-turtle the-turtle ""
       ]
     ]
+    set log-msg word log-msg "}}\n"
+    print log-msg
     stop
   ]
 
@@ -107,6 +104,12 @@ to go
     turtle-eat
     set age (age + 1)
     if sugar <= 0 or age > max-age [
+      if sugar <= 0[
+        print-turtle self "die of hungery: "
+      ]
+      if age > max-age[
+        print-turtle self "die of old: "
+      ]
       hatch 1 [ turtle-setup ]
       die
     ]
@@ -114,6 +117,24 @@ to go
   ]
   update-lorenz-and-gini
   tick
+end
+
+to print-turtle [the-turtle pre-msg]
+  set log-msg (word log-msg pre-msg
+;;  type (word pre-msg
+    [sugar] of the-turtle " "
+    [vision] of the-turtle " "
+    [init-sugar] of the-turtle  " "
+    [metabolism] of the-turtle  " "
+    [age] of the-turtle  "/"
+    [max-age] of the-turtle " "
+    [init-max-psugar] of the-turtle "→"
+    [max-psugar] of the-turtle  " ")
+
+;;  foreach track [n -> type (word n " ")]
+;;  print ""
+  foreach track [n -> set log-msg (word log-msg n " ")]
+  set log-msg word log-msg "\n"
 end
 
 to turtle-move ;; turtle procedure
@@ -305,7 +326,7 @@ initial-population
 initial-population
 10
 1000
-30.0
+50.0
 10
 1
 NIL
