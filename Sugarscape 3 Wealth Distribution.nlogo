@@ -6,6 +6,7 @@ globals [
 turtles-own [
   init-sugar      ;; 出生时继承多少财富
   init-max-psugar ;; 出生地有多富庶
+  track           ;; 移动轨迹
   sugar           ;; the amount of sugar this turtle has
   metabolism      ;; the amount of sugar that each turtles loses each tick
   vision          ;; the distance that this turtle can see in the horizontal and vertical directions
@@ -42,6 +43,7 @@ to turtle-setup ;; turtle procedure
   set sugar random-in-range minimum-sugar-endowment maximum-sugar-endowment
   set init-sugar sugar                   ;; 记录出生时继承的财富
   set init-max-psugar max-psugar         ;; 记录出生地有多富庶
+  set track [xcor ycor]                  ;; 记录出生地
   set metabolism random-in-range 1 4
   set max-age random-in-range 60 100
   set age 0
@@ -72,6 +74,24 @@ end
 ;;
 
 to go
+  if ticks > 200 [   ;; 200步停止
+    ;; 根据sugar倒排
+    output-print "sugar vision init-sugar metabolism age init-max-psugar max-psugar"
+    foreach sort-on [(- sugar)] turtles
+    [
+      the-turtle -> ask the-turtle [
+        output-print (word [sugar] of the-turtle " "
+          [vision] of the-turtle " "
+          [init-sugar] of the-turtle  " "
+          [metabolism] of the-turtle  " "
+          [age] of the-turtle  " "
+          [init-max-psugar] of the-turtle " "
+          [max-psugar] of the-turtle  " ")
+      ]
+    ]
+    stop
+  ]
+
   if not any? turtles [
     stop
   ]
@@ -101,6 +121,8 @@ to turtle-move ;; turtle procedure
     ;; if there are any such patches move to one of the patches that is closest
     move-to min-one-of possible-winners [distance myself]
   ]
+  set track lput xcor track
+  set track lput ycor track
 end
 
 to turtle-eat ;; turtle procedure
@@ -281,7 +303,7 @@ initial-population
 initial-population
 10
 1000
-400.0
+30.0
 10
 1
 NIL
@@ -360,11 +382,11 @@ BUTTON
 103
 298
 log
-output-type sugar output-type \" \" output-type vision output-type \" \" output-type init-sugar output-type \" \" output-type metabolism output-type \" \" output-type age output-type \" \" output-type init-max-psugar output-type \" \" output-type max-psugar output-type \" \" output-print \"\"\n
+;; 根据sugar倒排\noutput-print \"sugar vision init-sugar metabolism age init-max-psugar max-psugar\"\nforeach sort-on [(- sugar)] turtles \n[\n  the-turtle -> ask the-turtle [\n    output-print (word [sugar] of the-turtle \" \"  \n    [vision] of the-turtle \" \"  \n    [init-sugar] of the-turtle  \" \" \n    [metabolism] of the-turtle  \" \" \n    [age] of the-turtle  \" \"\n    [init-max-psugar] of the-turtle \" \"\n    [max-psugar] of the-turtle  \" \") \n  ]\n]
 NIL
 1
 T
-TURTLE
+OBSERVER
 NIL
 NIL
 NIL
