@@ -43,7 +43,8 @@ to turtle-setup ;; turtle procedure
   set sugar random-in-range minimum-sugar-endowment maximum-sugar-endowment
   set init-sugar sugar                   ;; 记录出生时继承的财富
   set init-max-psugar max-psugar         ;; 记录出生地有多富庶
-  set track [xcor ycor]                  ;; 记录出生地
+  set track  []                          ;; 记录出生地
+  set track lput (list xcor ycor max-psugar) track
   set metabolism random-in-range 1 4
   set max-age random-in-range 60 100
   set age 0
@@ -80,13 +81,15 @@ to go
     foreach sort-on [(- sugar)] turtles
     [
       the-turtle -> ask the-turtle [
-        output-print (word [sugar] of the-turtle " "
+        type (word [sugar] of the-turtle " "
           [vision] of the-turtle " "
           [init-sugar] of the-turtle  " "
           [metabolism] of the-turtle  " "
           [age] of the-turtle  " "
-          [init-max-psugar] of the-turtle " "
+          [init-max-psugar] of the-turtle "→"
           [max-psugar] of the-turtle  " ")
+        foreach track [n -> type (word n " ")]
+        print ""
       ]
     ]
     stop
@@ -121,8 +124,7 @@ to turtle-move ;; turtle procedure
     ;; if there are any such patches move to one of the patches that is closest
     move-to min-one-of possible-winners [distance myself]
   ]
-  set track lput xcor track
-  set track lput ycor track
+  set track lput (list xcor ycor max-psugar) track
 end
 
 to turtle-eat ;; turtle procedure
