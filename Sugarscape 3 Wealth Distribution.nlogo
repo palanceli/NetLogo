@@ -56,7 +56,7 @@ to turtle-setup ;; turtle procedure
 end
 
 to setup-patches
-  file-open "sugar-map.txt"
+  file-open "/Applications/NetLogo 6.0.4/models/Sample Models/Social Science/Sugarscape/sugar-map.txt"
   foreach sort patches [ p ->
     ask p [
       set max-psugar file-read
