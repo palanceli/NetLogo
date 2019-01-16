@@ -77,7 +77,7 @@ end
 ;;
 
 to go
-  if ticks > 200 [   ;; 200步停止
+  if ticks > 800 [   ;; 200步停止
     ;; 根据sugar倒排
     ;;output-print "sugar vision init-sugar metabolism age init-max-psugar max-psugar"
     set log-msg word log-msg "# sugar vision init-sugar metabolism age/max-age init-max-psugar max-psugar [x y s]\n"
